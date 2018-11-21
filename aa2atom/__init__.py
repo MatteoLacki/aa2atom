@@ -1,1 +1,1 @@
-from .aa2atom import aa2atom
+from .aa2atom import aa2atom, atom2str, atom2tex

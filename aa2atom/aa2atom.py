@@ -59,7 +59,7 @@ def aa2atom(aaseq, add_water=True):
     """
     res = LC()
     for aa, cnt in Counter(aaseq).items():
-        res = cnt * amino_acids_lc[aa]
+        res += cnt * amino_acids_lc[aa]
     if add_water:
         res['H'] += 2
         res['O'] += 1
