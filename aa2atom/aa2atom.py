@@ -65,6 +65,26 @@ def aa2atom(aaseq, add_water=True):
         res['O'] += 1
     return dict(res)
 
-aa2atom("ACEF")
-aa2atom("ACCCEEEFFPPP", add_water = False)
 
+def atom2str(atoms):
+    """Present atoms in the string form.
+
+    Arguments
+    =========
+    atoms : dict-like
+        Keys correspond to elements and values to atom counts.
+
+    Returns
+    =======
+    str : The chemical formula (compatible with IsoSpec).
+    """
+    return "".join(k + str(atoms[k]) for k in sorted(list(atoms.keys())))
+
+
+def atom2tex(atoms, ce=False):
+    f = "".join("{element}_{{{count}}}".format(element=element, count=count) if count > 1 else element
+                for element, count in sorted(atoms.items()))
+    if ce:
+        return "\ce{" + f + "}"
+    else:
+        return "$"+f+"$"

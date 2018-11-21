@@ -1,11 +1,27 @@
 #!/usr/bin/env python2
 import argparse
 
+from aa2atom.aa2atom import aa2atom, atom2tex, atom2str
+
 parser = argparse.ArgumentParser()
 parser.add_argument("aaseq", type=str, help="Sequence of amino-acids.")
 parser.add_argument('--nowater', dest='add_water', action='store_const',
                     const=False, default=True,
                     help='You want atom counts that do not include water?')
+parser.add_argument('--TeX', dest='tex', action='store_const',
+                    const=True, default=False,
+                    help='Do you want the output to be a nicely formatted TeX string?')
 
-args = parser.parse_args().__dict__
-print(args)
+parser.add_argument('--ce', dest='ce', action='store_const',
+                    const=True, default=False,
+                    help='Do you want the output to be a nicely formatted ce-TeX string?')
+
+args = parser.parse_args()
+atoms= aa2atom(aaseq = args.aaseq, add_water=args.add_water)
+
+if args.tex:
+	res = atom2tex(atoms, args.ce)
+else:
+	res = atom2str(atoms)
+
+print(res)
