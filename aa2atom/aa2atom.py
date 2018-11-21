@@ -1,4 +1,5 @@
 from linearCounter import LC
+from collections import Counter
 
 amino_acids = {  'A': {'H': 5, 'C': 3, 'O': 1, 'N': 1},
                  'C': {'H': 5, 'C': 3, 'S': 1, 'O': 1, 'N': 1},
@@ -21,6 +22,8 @@ amino_acids = {  'A': {'H': 5, 'C': 3, 'O': 1, 'N': 1},
                  'V': {'H': 9, 'C': 5, 'O': 1, 'N': 1},
                  'Y': {'H': 9, 'C': 9, 'O': 2, 'N': 1}}
 
+amino_acids_lc = {k: LC(v) for k,v in amino_acids.items()}
+
 aa2info = {  'A': ('Ala', 'Alanine', 'GCT', 'GCG', 'GCA', 'GCG'),
              'C': ('Cys', 'Cysteine', 'TGT', 'TGC'),
              'E': ('Glu', 'Glutamic Acid', 'GAA', 'GAG'),
@@ -42,7 +45,8 @@ aa2info = {  'A': ('Ala', 'Alanine', 'GCT', 'GCG', 'GCA', 'GCG'),
              'V': ('Val', 'Valine', 'GTT', 'GTC', 'GTA', 'GTG'),
              'Y': ('Tyr', 'Tyrosine', 'TAT', 'TAC')}
 
-def aa2atom(aaseq):
+
+def aa2atom(aaseq, add_water=True):
     """Get the atom counts for an amino acidic sequence.
 
     Arguments
@@ -53,10 +57,14 @@ def aa2atom(aaseq):
     =======
     dict : counts of atoms.
     """
-    res = Counter()
-    for aa, count in Counter(aaseq).items():
-        for atom, acount in amino_acids[aa].items():
-            res[atom] += count * acount
+    res = LC()
+    for aa, cnt in Counter(aaseq).items():
+        res = cnt * amino_acids_lc[aa]
+    if add_water:
+        res['H'] += 2
+        res['O'] += 1
     return dict(res)
 
-aa2atom
+aa2atom("ACEF")
+aa2atom("ACCCEEEFFPPP", add_water = False)
+
