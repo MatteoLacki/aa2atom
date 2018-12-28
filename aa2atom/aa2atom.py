@@ -46,6 +46,11 @@ aa2info = {  'A': ('Ala', 'Alanine', 'GCT', 'GCG', 'GCA', 'GCG'),
              'Y': ('Tyr', 'Tyrosine', 'TAT', 'TAC')}
 
 
+aa2shortName = {aa: v[0] for aa, v in aa2info.items()}
+aa2name = {aa: v[1] for aa, v in aa2info.items()}
+aa2encodingSequence = {aa: v[2:] for aa, v in aa2info.items()}
+
+
 def aa2atom(aaseq, add_water=True):
     """Get the atom counts for an amino acidic sequence.
 
