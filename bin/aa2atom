@@ -27,9 +27,10 @@ args = parser.parse_args()
 atoms = aa2atom(aaseq = args.aaseq, no_water=args.no_water)
 
 # dealing with PLGSptms
-for ptms in args.PLGSptms:
-	for ptm in PLGSptms2atom(ptms, args.aaseq):
-		atoms.update(ptm)
+if args.PLGSptms:
+	for ptms in args.PLGSptms:
+		for ptm in PLGSptms2atom(ptms, args.aaseq):
+			atoms.update(ptm)
 
 # dealing with custom PTM
 if args.chemdiff:
