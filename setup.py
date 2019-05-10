@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     name='aa2atom',
     packages=find_packages(),
-    version='1.1',
+    version='1.2',
     description='Change amino-acidic sequence into counts of atoms.',
     long_description='Change amino-acidic sequence into counts of atoms.',
     author='Mateusz Krzysztof Łącki',

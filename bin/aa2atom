@@ -4,6 +4,7 @@ from collections import Counter
 
 from aa2atom.aa2atom import aa2atom, atom2tex, atom2str
 from aa2atom.ptms import PLGSptms2atom
+from aa2atom.formulas import chem2atom, add_formulas
 
 parser = argparse.ArgumentParser()
 parser.add_argument("aaseq", type=str, help="Sequence of amino-acids.")
@@ -30,8 +31,10 @@ for ptms in args.PLGSptms:
 	for ptm in PLGSptms2atom(ptms, args.aaseq):
 		atoms.update(ptm)
 
-aa2atom('C10')
 # dealing with custom PTM
+if args.chemdiff:
+	chemdiff = chem2atom(args.chemdiff)
+	atoms = add_formulas(atoms, chemdiff)
 
 
 if args.tex:
@@ -40,3 +43,7 @@ else:
 	res = atom2str(atoms)
 
 print(res)
+
+dict(Counter({'C':-1}))
+
+add_formulas({'C':10, 'H':20}, {'C':2, 'H':2})
