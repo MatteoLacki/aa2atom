@@ -1,23 +1,38 @@
 #!/usr/bin/env python3
 import argparse
+from collections import Counter
 
 from aa2atom.aa2atom import aa2atom, atom2tex, atom2str
+from aa2atom.ptms import PLGSptms2atom
 
 parser = argparse.ArgumentParser()
 parser.add_argument("aaseq", type=str, help="Sequence of amino-acids.")
-parser.add_argument('--nowater', dest='add_water', action='store_const',
-                    const=False, default=True,
-                    help='You want atom counts that do not include water?')
+parser.add_argument('--nowater', dest='no_water', action='store_const',
+                    const=True, default=False,
+                    help='Output the molecule without adding in H2O.')
 parser.add_argument('--TeX', dest='tex', action='store_const',
                     const=True, default=False,
-                    help='Do you want the output to be a nicely formatted TeX string?')
-
+                    help='Output as a TeX string.')
 parser.add_argument('--ce', dest='ce', action='store_const',
                     const=True, default=False,
-                    help='Do you want the output to be a nicely formatted ce-TeX string?')
+                    help='Output as a ce-TeX string.')
+parser.add_argument('--PLGSptms', nargs='+',
+                    help='List of PLGS modifications. Currently accepts expressions like "Carbamidomethyl+C(7)", "Oxidation+M(2)", etc.')
+
+parser.add_argument('--chemdiff', 
+					help='A custom chemical difference to the formula, e.g. "C2H3S-1". Nonnegativity of atom counts of the outcome is checked for!')
 
 args = parser.parse_args()
-atoms= aa2atom(aaseq = args.aaseq, add_water=args.add_water)
+atoms = aa2atom(aaseq = args.aaseq, no_water=args.no_water)
+
+# dealing with PLGSptms
+for ptms in args.PLGSptms:
+	for ptm in PLGSptms2atom(ptms, args.aaseq):
+		atoms.update(ptm)
+
+aa2atom('C10')
+# dealing with custom PTM
+
 
 if args.tex:
 	res = atom2tex(atoms, args.ce)

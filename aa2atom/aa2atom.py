@@ -23,8 +23,6 @@ amino_acids = {  'A': {'H': 5, 'C': 3, 'O': 1, 'N': 1},
                  'V': {'H': 9, 'C': 5, 'O': 1, 'N': 1},
                  'Y': {'H': 9, 'C': 9, 'O': 2, 'N': 1}}
 
-amino_acids_counters = {k: Counter(v) for k,v in amino_acids.items()}
-
 aa2info = {  'A': ('Ala', 'Alanine', 'GCT', 'GCG', 'GCA', 'GCG'),
              'C': ('Cys', 'Cysteine', 'TGT', 'TGC'),
              'E': ('Glu', 'Glutamic Acid', 'GAA', 'GAG'),
@@ -54,7 +52,7 @@ aa2name = {aa: v[1] for aa, v in aa2info.items()}
 aa2encodingSequence = {aa: v[2:] for aa, v in aa2info.items()}
 
 
-def aa2atom(aaseq, add_water=True):
+def aa2atom(aaseq, no_water=False):
     """Get the atom counts for an amino acidic sequence.
 
     Arguments
@@ -63,7 +61,7 @@ def aa2atom(aaseq, add_water=True):
         A sequence of amino acids, eg. "AAQPQQAA".
     Returns
     =======
-    dict : counts of atoms.
+    collections.Counter : counts of atoms.
     """
     aacnts = Counter(aaseq)
     res = Counter()
@@ -71,6 +69,9 @@ def aa2atom(aaseq, add_water=True):
         aacnt = aacnts[a]
         for atom, cnt in amino_acids[a].items():
             res[atom] += aacnt*cnt
+    if not no_water:
+        res['H'] += 2
+        res['O'] += 1
     return res
 
 
@@ -96,5 +97,4 @@ def atom2tex(atoms, ce=False):
         return "\ce{" + f + "}"
     else:
         return "$"+f+"$"
-
 
