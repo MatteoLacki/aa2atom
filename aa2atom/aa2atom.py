@@ -1,4 +1,3 @@
-from linearCounter import LC
 from collections import Counter
 
 amino_acids = {  'A': {'H': 5, 'C': 3, 'O': 1, 'N': 1},
@@ -24,7 +23,7 @@ amino_acids = {  'A': {'H': 5, 'C': 3, 'O': 1, 'N': 1},
                  'V': {'H': 9, 'C': 5, 'O': 1, 'N': 1},
                  'Y': {'H': 9, 'C': 9, 'O': 2, 'N': 1}}
 
-amino_acids_lc = {k: LC(v) for k,v in amino_acids.items()}
+amino_acids_counters = {k: Counter(v) for k,v in amino_acids.items()}
 
 aa2info = {  'A': ('Ala', 'Alanine', 'GCT', 'GCG', 'GCA', 'GCG'),
              'C': ('Cys', 'Cysteine', 'TGT', 'TGC'),
@@ -66,13 +65,13 @@ def aa2atom(aaseq, add_water=True):
     =======
     dict : counts of atoms.
     """
-    res = LC()
-    for aa, cnt in Counter(aaseq).items():
-        res += cnt * amino_acids_lc[aa]
-    if add_water:
-        res['H'] += 2
-        res['O'] += 1
-    return dict(res)
+    aacnts = Counter(aaseq)
+    res = Counter()
+    for a in aacnts:
+        aacnt = aacnts[a]
+        for atom, cnt in amino_acids[a].items():
+            res[atom] += aacnt*cnt
+    return res
 
 
 def atom2str(atoms):
@@ -97,3 +96,5 @@ def atom2tex(atoms, ce=False):
         return "\ce{" + f + "}"
     else:
         return "$"+f+"$"
+
+
