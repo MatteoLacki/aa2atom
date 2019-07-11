@@ -4,12 +4,13 @@ from setuptools import setup, find_packages
 setup(
     name='aa2atom',
     packages=find_packages(),
-    version='1.24',
+    version='1.25',
     description='Change amino-acidic sequence into counts of atoms.',
     long_description='Change amino-acidic sequence into counts of atoms.',
     author='Mateusz Krzysztof Łącki',
     author_email='matteo.lacki@gmail.com',
     keywords=['Mass Spectrometry', 'fasta', 'Analitical Chemistry', 'Amino acids'],
+    url="https://github.com/MatteoLacki/aa2atom",
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: BSD License',
