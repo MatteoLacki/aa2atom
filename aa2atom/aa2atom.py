@@ -13,6 +13,7 @@ amino_acids = {  'A': {'H': 5, 'C': 3, 'O': 1, 'N': 1},
                  'M': {'H': 9, 'C': 5, 'S': 1, 'O': 1, 'N': 1},
                  'L': {'H': 11, 'C': 6, 'O': 1, 'N': 1},
                  'N': {'H': 6, 'C': 4, 'O': 2, 'N': 2},
+                 'O': {'H': 19,'C':12, 'O': 2, 'N': 3},
                  'Q': {'H': 8, 'C': 5, 'O': 2, 'N': 2},
                  'P': {'C': 5, 'O': 1, 'H': 7, 'N': 1},
                  'S': {'H': 5, 'C': 3, 'O': 2, 'N': 1},
@@ -36,6 +37,7 @@ aa2info = {  'A': ('Ala', 'Alanine', 'GCT', 'GCG', 'GCA', 'GCG'),
              'M': ('Met', 'Methionine', 'ATG'),
              'L': ('Leu', 'Leucine', 'CTT', 'CTC', 'CTA', 'CTG', 'TTA', 'TTG'),
              'N': ('Asn', 'Asparagine', 'AAT', 'AAC'),
+             'O': ('Pyl', 'Pyrrolysine'),
              'Q': ('Gln', 'Glutamine', 'CAA', 'CAG'),
              'P': ('Pro', 'Proline', 'CCT', 'CCC', 'CCA', 'CCG'),
              'S': ('Ser', 'Serine', 'TCT', 'TCC', 'TCA', 'TCG', 'AGT', 'AGC'),
@@ -47,9 +49,24 @@ aa2info = {  'A': ('Ala', 'Alanine', 'GCT', 'GCG', 'GCA', 'GCG'),
              'Y': ('Tyr', 'Tyrosine', 'TAT', 'TAC')}
 
 
+
 aa2shortName = {aa: v[0] for aa, v in aa2info.items()}
 aa2name = {aa: v[1] for aa, v in aa2info.items()}
 aa2encodingSequence = {aa: v[2:] for aa, v in aa2info.items()}
+
+
+class UnknownAminoAcid(Exception):
+    """Exception raised for errors in the input.
+
+    Attributes:
+        res: a partial result before the exception was raised. It is stored at property "res" of the exception and can be accessed later on.
+        unknown_aas (dict): unspecified amino acids and their counts.  
+    """
+
+    def __init__(self, res, unknown_aas, *args, **kwrg):
+        super().__init__(*args, **kwrg)
+        self.res = res
+        self.unknown_aas = unknown_aas
 
 
 def aa2atom(aaseq, no_water=False):
@@ -65,14 +82,22 @@ def aa2atom(aaseq, no_water=False):
     """
     aacnts = Counter(aaseq)
     res = Counter()
-    for a in aacnts:
-        aacnt = aacnts[a]
-        for atom, cnt in amino_acids[a].items():
-            res[atom] += aacnt*cnt
+    error = False
+    unknown_aas = {}
+    for a, aacnt in aacnts.items():
+        try:
+            for atom, cnt in amino_acids[a].items():
+                res[atom] += aacnt*cnt
+        except KeyError:
+            unknown_aas[a] = unknown_aas.get(a, 0) + aacnt
+            error = True
     if not no_water:
         res['H'] += 2
         res['O'] += 1
-    return res
+    if error:
+        raise UnknownAminoAcid(res, unknown_aas, "Sequence contained unspecified entries: {}.".format(str(unknown_aas)))
+    else:
+        return res
 
 
 def atom2str(atoms):

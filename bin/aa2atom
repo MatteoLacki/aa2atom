@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import argparse
 
-from aa2atom.aa2atom import aa2atom, atom2tex, atom2str
+from aa2atom.aa2atom import aa2atom, atom2tex, atom2str, UnknownAminoAcid
 from aa2atom.ptms import PLGSptms2atom
 from aa2atom.formulas import chem2atom, add_formulas
+
 
 parser = argparse.ArgumentParser(description='Turn an sequence of amino acids into a chemical formula.')
 parser.add_argument("aaseq", type=str, help="Sequence of amino-acids.")
@@ -22,7 +23,18 @@ parser.add_argument('--chemdiff',
 					help='A custom chemical difference to the formula, e.g. "C2H3S-1". Nonnegativity of atom counts of the outcome is checked for!')
 
 args = parser.parse_args()
-atoms = aa2atom(aaseq = args.aaseq, no_water=args.no_water)
+
+try:
+	atoms = aa2atom(aaseq = args.aaseq, no_water=args.no_water)
+except UnknownAminoAcid as uaa:
+	print(uaa)
+	if 'B' in uaa.unknown_aas:
+		print('"B" can be either aspartate or asparagine.')
+	if 'X' in uaa.unknown_aas:
+		print('"X" can be anything')
+	print('Formula without these things is:')
+	atoms = uaa.res
+
 
 # dealing with PLGSptms
 if args.PLGSptms:

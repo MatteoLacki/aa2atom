@@ -2,6 +2,7 @@
 import argparse
 
 from aa2atom import atom2mass, aa2atom
+from aa2atom.aa2atom import UnknownAminoAcid
 
 parser = argparse.ArgumentParser(description='Calculate the (monoisotopic or average) mass of a sequence of amino acids.')
 parser.add_argument("aaseq", type=str, help="Sequence of amino-acids.")
@@ -17,7 +18,16 @@ parser.add_argument('--average_mass', dest='which_mass', action='store_const',
                     help='Return the average mass instead of the monoisotopic one.')
 
 args = parser.parse_args()
-atoms = aa2atom(aaseq = args.aaseq, no_water=args.no_water)
+try:
+	atoms = aa2atom(aaseq = args.aaseq, no_water=args.no_water)
+except UnknownAminoAcid as uaa:
+	print(uaa)
+	if 'B' in uaa.unknown_aas:
+		print('"B" can be either aspartate or asparagine.')
+	if 'X' in uaa.unknown_aas:
+		print('"X" can be anything')
+	print('Mass without the mass of these things equals:')
+	atoms = uaa.res
 
 # dealing with PLGSptms
 if args.PLGSptms:
