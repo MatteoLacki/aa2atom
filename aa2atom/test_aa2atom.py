@@ -1,6 +1,5 @@
 from aa2atom import aa2atom
 
-
 def test_if_aa2atom_works_like_before():
     assert aa2atom("ACEF") == {'H': 11, 'C': 9, 'O': 2, 'N': 1}
 

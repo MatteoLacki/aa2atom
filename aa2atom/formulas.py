@@ -12,14 +12,27 @@ def chem2atom(chem):
     Return:
         dict: counts of atoms.
     """
-    global chem_formula
     return Counter({el: 1 if cnt is '' else int(cnt)
     				for el, cnt in chem_formula.findall(chem)})
+
+
+def dictformula2str(formula):
+    """Cast a formula dictionary to a string.
+
+    Args:
+        formula (dict-like): A mapping between element names and their counts.
+    Returns:
+        str: a string with atom counts, sorted by atoms.
+    """
+    return "".join("{}{}".format(*x) for x in sorted(formula.items()))
+
 
 def test_chem2atom():
 	assert chem2atom('CH2Cu-1') == {'C':1,'H':2,'Cu':-1}
 
+
 def add_formulas(f, g, check_positivity=True):
+	"""Adding formulas together."""
 	res = Counter()
 	for a in set(f.keys()) | set(g.keys()):
 		cnt = f.get(a, 0) + g.get(a, 0)
@@ -27,6 +40,7 @@ def add_formulas(f, g, check_positivity=True):
 		if cnt:
 			res[a] = cnt
 	return res
+
 
 def test_add_formulas():
 	assert add_formulas({'C':10, 'H':20}, {'C':2, 'H':2}) == {'H':22, 'C':12}

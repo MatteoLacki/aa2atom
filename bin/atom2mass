@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+import argparse
+
+from aa2atom import atom2mass
+
+parser = argparse.ArgumentParser(description='Calculate the (monoisotopic or average) mass of the provided formula.')
+parser.add_argument("formula", type=str, help="A chemical formula, e.g. C1323H2302S22.")
+parser.add_argument('--average_mass', dest='which_mass', action='store_const',
+                    const='meanmass', default='monoisotopic',
+                    help='Return the average mass instead of the monoisotopic one.')
+args = parser.parse_args()
+
+res = atom2mass(args.formula)
+print(res)
