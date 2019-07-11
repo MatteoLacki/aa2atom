@@ -1,4 +1,6 @@
-Simply, map a sequence of amino acids to the corresponding counts of atoms.
+Map a sequence of amino acids to the corresponding counts of atoms.
+For a chemical formula (or a sequence of amino acids), calculate its monoisotopic mass (or average mass).
+
 
 Installation
 ------------
@@ -43,4 +45,13 @@ aa2atom MDYSNFGNSASKKFQDDTLNRVRKEHEEA --TeX
 
 aa2atom MDYSNFGNSASKKFQDDTLNRVRKEHEEA --TeX --ce
 # \ce{C_{144}H_{222}N_{44}O_{51}S}
+
+aa2mass MDYSNFGNSASKKFQDDTLNRVRKEHEEA
+# 3415.58513015304
+
+atom2mass H2O
+# 18.01056468474
+
+atom2mass H2O --average
+# 18.01529165390649
 ```
